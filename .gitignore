@@ -57,3 +57,6 @@ docs/_build/
 target/
 
 user_data/
+api_key.py
+nltk_data/
+
