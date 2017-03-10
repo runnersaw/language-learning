@@ -46,6 +46,19 @@ def get_words_to_train(translate_dict):
 				print('')
 				continue
 
+def get_master_count():
+	while True:
+		print('After how many times should a word be considered mastered?')
+		master_count = str(raw_input('> '))
+		try:
+			master_count = int(master_count)
+			print('')
+			return master_count
+		except ValueError as e:
+			print('Enter a number, please')
+			print('')
+			continue
+
 def get_repeat():
 	while True:
 		print('(y/n) Would you like to train on these words again?')
@@ -77,7 +90,7 @@ def correct_word(word, meaning, language):
 	translate_dict[word].insert(0, meaning)
 	save_as_text_file(translate_dict, language)
 
-def run_flash_cards(chosen_words_dict, language):
+def run_flash_cards(chosen_words_dict, master_count, language):
 	chosen_words_dict = copy.deepcopy(chosen_words_dict)
 	success_dict = {}
 	last_word = None
@@ -114,9 +127,9 @@ def run_flash_cards(chosen_words_dict, language):
 		if correct:
 			print("Correct! Correct words: "+", ".join(chosen_words_dict[word]))
 
-			if success_dict[word] >= 1: #could change
+			if success_dict[word]['right'] >= master_count:
 				chosen_words_dict.pop(word, None)
-				print(word+" is mastered\n")
+				print(word+" is mastered")
 				if len(chosen_words_dict) == 0:
 					return
 		else:
@@ -140,8 +153,10 @@ if __name__=="__main__":
 
 	while True:
 		chosen_words = get_words_to_train(translate_dict)
+		master_count = get_master_count()
+		print(master_count)
 		while True:
-			run_flash_cards(chosen_words, language)
+			run_flash_cards(chosen_words, master_count, language)
 			repeat = get_repeat()
 			if not repeat:
 				break
